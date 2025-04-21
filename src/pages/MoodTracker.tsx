@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, History } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format, isToday, subDays, parseISO, compareAsc } from "date-fns";
+import { toast } from "sonner";
 
 const moods = [
   { label: "Happy", value: "happy", icon: "😊" },
@@ -30,6 +31,58 @@ function getSuggestion(mood: string): string {
     default:
       return "Select a mood to get a personalized suggestion.";
   }
+}
+
+// Function to generate a summary based on the last 7 days mood patterns
+function getLocalSummary(history: MoodHistory): string {
+  const last7 = getLast7Days().filter((d) => !!history[d]);
+  
+  if (last7.length === 0) {
+    return "No mood data available for the last 7 days.";
+  }
+
+  // Count occurrences of each mood
+  const moodCounts: Record<string, number> = {};
+  let mostFrequentMood = "";
+  let maxCount = 0;
+
+  last7.forEach(date => {
+    const mood = history[date];
+    moodCounts[mood] = (moodCounts[mood] || 0) + 1;
+    
+    if (moodCounts[mood] > maxCount) {
+      mostFrequentMood = mood;
+      maxCount = moodCounts[mood];
+    }
+  });
+
+  // Get the label of the most frequent mood
+  const mostFrequentMoodLabel = moods.find(m => m.value === mostFrequentMood)?.label || "Unknown";
+  
+  // Check for mood variety
+  const uniqueMoods = Object.keys(moodCounts).length;
+  
+  // Generate appropriate summary based on patterns
+  if (uniqueMoods === 1) {
+    // Only one mood all week
+    if (mostFrequentMood === "happy") {
+      return "You've had a consistently happy week! This is wonderful to see. Remember to celebrate these positive periods in your life.";
+    } else if (mostFrequentMood === "calm") {
+      return "Your week has been consistently calm. This steadiness can be a great foundation. Consider how to maintain this balanced state.";
+    } else if (mostFrequentMood === "anxious") {
+      return "You've been feeling anxious throughout the week. Try to identify specific triggers and maybe consider some calming activities like deep breathing or nature walks.";
+    } else if (mostFrequentMood === "sad") {
+      return "You've been experiencing sadness consistently this week. Remember it's okay to feel down, but also consider reaching out for support if needed.";
+    } else if (mostFrequentMood === "angry") {
+      return "You've experienced anger throughout the week. Consider healthy ways to process these feelings, like physical exercise or journaling about your thoughts.";
+    }
+  } else if (uniqueMoods >= 3) {
+    return `Your week showed quite a range of emotions, with ${mostFrequentMoodLabel.toLowerCase()} being your most common feeling. Emotional variety is normal - consider noting what might have triggered these changes.`;
+  } else {
+    return `This week, you've primarily felt ${mostFrequentMoodLabel.toLowerCase()}. Notice what activities or situations might be influencing your mood patterns.`;
+  }
+  
+  return "Looking at your mood patterns can help you understand yourself better. Consider what might have influenced these feelings.";
 }
 
 type MoodHistory = {
@@ -59,6 +112,7 @@ const MoodTracker = () => {
   const [loadingSummary, setLoadingSummary] = useState<boolean>(false);
   const [summaryErr, setSummaryErr] = useState<string | null>(null);
   const [showAllHistory, setShowAllHistory] = useState<boolean>(false);
+  const [useLocalSummary, setUseLocalSummary] = useState<boolean>(false);
 
   // Load history from localStorage when component mounts
   useEffect(() => {
@@ -81,6 +135,10 @@ const MoodTracker = () => {
     setHistory(updatedHistory);
     localStorage.setItem(LOCAL_KEY, JSON.stringify(updatedHistory));
     setSelectedMood(moodValue);
+    
+    // Show confirmation toast
+    const moodLabel = moods.find(m => m.value === moodValue)?.label || "Unknown";
+    toast.success(`${moodLabel} mood saved for ${format(selectedDate, "MMM d")}`);
   };
 
   // --- AI SUMMARY FUNCTIONALITY ---
@@ -90,13 +148,20 @@ const MoodTracker = () => {
     setSummaryErr(null);
 
     const last7 = getLast7Days().filter((d) => !!history[d]);
-    if (!apiKey) {
-      setSummaryErr("Please enter your Perplexity API key.");
+    if (!apiKey && !useLocalSummary) {
+      setSummaryErr("Please enter your Perplexity API key or switch to local summary.");
       setLoadingSummary(false);
       return;
     }
     if (last7.length === 0) {
       setSummaryErr("No mood data available for the last 7 days.");
+      setLoadingSummary(false);
+      return;
+    }
+
+    // If using local summary, generate it without API
+    if (useLocalSummary) {
+      setAiSummary(getLocalSummary(history));
       setLoadingSummary(false);
       return;
     }
@@ -141,11 +206,19 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
       const data = await response.json();
       setAiSummary(data.choices?.[0]?.message?.content || "No summary generated.");
     } catch (err: any) {
-      setSummaryErr("Could not fetch summary. Is your API key correct?");
+      setSummaryErr("Could not fetch summary. Try using the local summary option instead.");
+      setUseLocalSummary(true); // Auto-switch to local summary on error
     } finally {
       setLoadingSummary(false);
     }
   }
+
+  // Toggle between local and API summary
+  const toggleSummaryMode = () => {
+    setUseLocalSummary(prev => !prev);
+    setAiSummary(null);
+    setSummaryErr(null);
+  };
 
   // --- HISTORY LIST FOR ALL TIME ---
   const allDatesSorted = getSortedDates(history);
@@ -163,21 +236,32 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
             <div className="flex items-center gap-2 justify-between">
               <span className="font-semibold flex items-center gap-2 text-lg">
                 <History size={18} /> 
-                AI Mood Summary (Last 7 Days)
+                {useLocalSummary ? "Mood Summary (Local)" : "AI Mood Summary"} (Last 7 Days)
               </span>
-              <Button size="sm" variant="outline" onClick={fetchAiSummary} disabled={loadingSummary}>
-                {loadingSummary ? "Analyzing..." : "Generate"}
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  variant={useLocalSummary ? "outline" : "secondary"} 
+                  onClick={toggleSummaryMode}
+                >
+                  {useLocalSummary ? "Use API" : "Use Local"}
+                </Button>
+                <Button size="sm" variant="outline" onClick={fetchAiSummary} disabled={loadingSummary}>
+                  {loadingSummary ? "Analyzing..." : "Generate"}
+                </Button>
+              </div>
             </div>
             <div className="flex flex-col gap-2">
-              <input
-                type="password"
-                placeholder="Perplexity API Key"
-                className="border px-3 py-2 rounded bg-gray-50 text-sm mb-2"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                autoComplete="off"
-              />
+              {!useLocalSummary && (
+                <input
+                  type="password"
+                  placeholder="Perplexity API Key"
+                  className="border px-3 py-2 rounded bg-gray-50 text-sm mb-2"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  autoComplete="off"
+                />
+              )}
               {summaryErr && (
                 <span className="text-sm text-red-500">{summaryErr}</span>
               )}
@@ -185,7 +269,7 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
                 <div className="bg-white p-3 rounded text-gray-700 border">{aiSummary}</div>
               )}
               {!summaryErr && !aiSummary && !loadingSummary && (
-                <div className="text-gray-400 text-sm">Click "Generate" for a personalized summary.</div>
+                <div className="text-gray-400 text-sm">Click "Generate" for a {useLocalSummary ? "locally generated" : "personalized AI"} summary.</div>
               )}
             </div>
           </div>
@@ -208,7 +292,7 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
 
         {/* Mood Selector */}
         <div className="mb-8">
-          <div className="flex gap-4 justify-center items-center">
+          <div className="flex flex-wrap gap-4 justify-center items-center">
             {moods.map((mood) => (
               <button
                 key={mood.value}
