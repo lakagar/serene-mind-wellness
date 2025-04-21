@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,12 +9,57 @@ import { MessageSquare, User, ArrowUp, Clock } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 
+interface Message {
+  id: number;
+  sender: 'user' | 'therapist';
+  content: string;
+  timestamp: Date;
+}
+
+const therapistResponses = [
+  "Can you tell me more about how that makes you feel?",
+  "How long have you been experiencing this?",
+  "What strategies have you tried so far to cope with this situation?",
+  "It sounds like this has been really challenging for you. Let's explore this further.",
+  "How does this affect your daily life?",
+  "What kind of support do you feel would be most helpful right now?",
+];
+
 const ChatSession = () => {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      sender: 'therapist',
+      content: "Hello! I'm Dr. Sarah Johnson. How are you feeling today?",
+      timestamp: new Date(),
+    },
+  ]);
   const [sessionTime, setSessionTime] = useState(30);
   const [isSessionActive, setIsSessionActive] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // in seconds
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (isSessionActive) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setIsSessionActive(false);
+            toast({
+              title: "Session Ended",
+              description: "Your therapy session has ended.",
+            });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [isSessionActive, toast]);
 
   const handleStartSession = () => {
     setIsSessionActive(true);
@@ -23,15 +67,46 @@ const ChatSession = () => {
       title: "Chat Session Started",
       description: `Your ${sessionTime} minute session with Dr. Sarah Johnson has begun.`,
     });
-    
-    // In a real app, we would connect to a real session here
     setTimeLeft(sessionTime * 60);
+  };
+
+  const handleSendMessage = () => {
+    if (message.trim() === "") return;
+
+    // Add user message
+    const userMessage: Message = {
+      id: messages.length + 1,
+      sender: 'user',
+      content: message.trim(),
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setMessage("");
+
+    // Simulate therapist response
+    setTimeout(() => {
+      const randomResponse = therapistResponses[Math.floor(Math.random() * therapistResponses.length)];
+      const therapistMessage: Message = {
+        id: messages.length + 2,
+        sender: 'therapist',
+        content: randomResponse,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, therapistMessage]);
+    }, 1000);
   };
   
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   return (
@@ -106,25 +181,19 @@ const ChatSession = () => {
                     </div>
                   </div>
                   
-                  {/* Placeholder for chat messages */}
+                  {/* Chat messages */}
                   <div className="p-4 h-[400px] overflow-y-auto flex flex-col gap-3 bg-gray-50">
-                    <div className="flex justify-start">
-                      <div className="max-w-[80%] p-3 rounded-lg bg-white border border-gray-100 shadow-sm">
-                        <p>Hello! I'm Dr. Johnson. How are you feeling today?</p>
+                    {messages.map((msg) => (
+                      <div key={msg.id} className={`flex justify-${msg.sender === 'user' ? 'end' : 'start'}`}>
+                        <div className={`max-w-[80%] p-3 rounded-lg ${
+                          msg.sender === 'user' 
+                            ? 'bg-wellness-primary text-white' 
+                            : 'bg-white border border-gray-100 shadow-sm'
+                        }`}>
+                          <p>{msg.content}</p>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex justify-end">
-                      <div className="max-w-[80%] p-3 rounded-lg bg-wellness-primary text-white">
-                        <p>Hi Dr. Johnson. I've been struggling with anxiety lately, especially at work.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-start">
-                      <div className="max-w-[80%] p-3 rounded-lg bg-white border border-gray-100 shadow-sm">
-                        <p>I'm sorry to hear that. Can you tell me more about what situations at work trigger your anxiety?</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                   
                   {/* Message input */}
@@ -137,6 +206,7 @@ const ChatSession = () => {
                         <Textarea
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
+                          onKeyPress={handleKeyPress}
                           placeholder="Type your message here..."
                           className="pr-12 resize-none min-h-[80px]"
                           rows={2}
@@ -144,6 +214,7 @@ const ChatSession = () => {
                         <Button
                           size="icon"
                           className="absolute right-2 bottom-2 bg-wellness-primary hover:bg-wellness-secondary h-8 w-8"
+                          onClick={handleSendMessage}
                           disabled={message.trim() === ""}
                         >
                           <ArrowUp className="h-4 w-4" />
