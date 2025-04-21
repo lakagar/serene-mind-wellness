@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getContextualResponse } from "@/utils/therapistResponses";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -15,15 +16,6 @@ interface Message {
   content: string;
   timestamp: Date;
 }
-
-const therapistResponses = [
-  "Can you tell me more about how that makes you feel?",
-  "How long have you been experiencing this?",
-  "What strategies have you tried so far to cope with this situation?",
-  "It sounds like this has been really challenging for you. Let's explore this further.",
-  "How does this affect your daily life?",
-  "What kind of support do you feel would be most helpful right now?",
-];
 
 const ChatSession = () => {
   const [message, setMessage] = useState("");
@@ -83,13 +75,13 @@ const ChatSession = () => {
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
 
-    // Simulate therapist response
+    // Get contextual therapist response
     setTimeout(() => {
-      const randomResponse = therapistResponses[Math.floor(Math.random() * therapistResponses.length)];
+      const response = getContextualResponse(userMessage.content);
       const therapistMessage: Message = {
         id: messages.length + 2,
         sender: 'therapist',
-        content: randomResponse,
+        content: response,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, therapistMessage]);
