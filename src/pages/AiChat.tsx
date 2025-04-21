@@ -1,10 +1,11 @@
+
 import { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MessageSquare, User, Bot, ArrowUp } from "lucide-react";
 
 interface Message {
@@ -27,8 +28,9 @@ const AiChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Sample AI responses for demo purposes
+  // Enhanced AI responses for mental health
   const aiResponses = [
+    // General support responses
     "I understand that can be challenging. Could you tell me more about what's troubling you?",
     "It sounds like you're going through a difficult time. Remember, it's okay to feel this way, and there are ways to cope.",
     "Thank you for sharing that with me. Have you tried any relaxation techniques that have helped you in the past?",
@@ -36,7 +38,31 @@ const AiChat = () => {
     "That's a common feeling many people experience. Would you like to learn some strategies that might help?",
     "It takes courage to talk about these feelings. How long have you been experiencing this?",
     "I'm here to listen and support you. Would it help to explore some grounding exercises together?",
-    // Expanded customer query support:
+    
+    // Depression-specific responses
+    "Depression can make even small tasks feel overwhelming. Have you spoken with a healthcare provider about how you're feeling?",
+    "When you're feeling low, sometimes setting very small goals can help. Could we think about one tiny step you might take today?",
+    "Loss of interest in activities you once enjoyed is a common sign of depression. Would you like to explore some resources for depression?",
+    "Depression often lies to us about our worth and future. Remember that these negative thoughts are symptoms, not reality.",
+    
+    // Anxiety-specific responses
+    "Anxiety can feel like your body and mind are on high alert constantly. Deep breathing can help activate your parasympathetic nervous system.",
+    "When anxiety spirals, grounding techniques can help. Would you like to try the 5-4-3-2-1 technique with me?",
+    "Worrying about the future is common with anxiety. Let's focus on what we can control in this moment.",
+    "Anxiety often creates 'what if' scenarios. Can we challenge some of these thoughts together?",
+    
+    // Stress management
+    "Chronic stress can impact both mind and body. Regular breaks and mindfulness practice can help manage stress levels.",
+    "When we're stressed, our sleep often suffers, which creates a difficult cycle. Are you having trouble sleeping?",
+    "Stress reduction isn't always about eliminating stressors but changing how we respond to them. Have you tried any stress management techniques?",
+    
+    // Self-care focused
+    "Regular exercise, even just a short walk, can significantly impact your mental health. Could you incorporate some movement today?",
+    "Proper nutrition plays a key role in mental wellness. Have you been able to maintain regular, nutritious meals?",
+    "Social connections are vital for mental health. Is there someone supportive you could reach out to today?",
+    "Setting boundaries is an important part of self-care. Are there any boundaries you might need to establish or reinforce?",
+
+    // Customer service responses
     "For medicine orders: You can check your order status in the Medication section. Would you like help finding your order?",
     "Our counseling sessions can be booked online or via phone. Do you want guidance on booking?",
     "Group sessions are available weekly. Would you like to see the upcoming schedule?",
@@ -66,10 +92,35 @@ const AiChat = () => {
     // Simulate AI response
     setIsTyping(true);
     setTimeout(() => {
-      const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+      // Choose response based on keywords in user message
+      let response = "";
+      const lowercaseMessage = newMessage.toLowerCase();
+      
+      if (lowercaseMessage.includes("depress") || lowercaseMessage.includes("sad") || lowercaseMessage.includes("low mood")) {
+        // Depression related responses
+        const depressionResponses = aiResponses.slice(7, 11);
+        response = depressionResponses[Math.floor(Math.random() * depressionResponses.length)];
+      } else if (lowercaseMessage.includes("anxious") || lowercaseMessage.includes("anxiety") || lowercaseMessage.includes("worry") || lowercaseMessage.includes("panic")) {
+        // Anxiety related responses
+        const anxietyResponses = aiResponses.slice(11, 15);
+        response = anxietyResponses[Math.floor(Math.random() * anxietyResponses.length)];
+      } else if (lowercaseMessage.includes("stress") || lowercaseMessage.includes("overwhelm")) {
+        // Stress related responses
+        const stressResponses = aiResponses.slice(15, 18);
+        response = stressResponses[Math.floor(Math.random() * stressResponses.length)];
+      } else if (lowercaseMessage.includes("order") || lowercaseMessage.includes("book") || lowercaseMessage.includes("session") || lowercaseMessage.includes("payment") || lowercaseMessage.includes("refund")) {
+        // Customer service related responses
+        const customerResponses = aiResponses.slice(22);
+        response = customerResponses[Math.floor(Math.random() * customerResponses.length)];
+      } else {
+        // General responses
+        const generalResponses = aiResponses.slice(0, 7);
+        response = generalResponses[Math.floor(Math.random() * generalResponses.length)];
+      }
+      
       const aiMessage: Message = {
         id: messages.length + 2,
-        content: randomResponse,
+        content: response,
         isUser: false,
         timestamp: new Date(),
       };
@@ -186,10 +237,10 @@ const AiChat = () => {
                 <a href="/counseling">Book a Professional Session</a>
               </Button>
               <Button asChild variant="outline" className="border-wellness-primary text-wellness-primary">
-                <a href="/self-help">Explore Self-Help Tools</a>
+                <a href="/chat-session">Start a Chat Session</a>
               </Button>
               <Button asChild variant="outline" className="border-wellness-primary text-wellness-primary">
-                <a href="/groups">Join a Support Group</a>
+                <a href="/video-call">Start a Video Call</a>
               </Button>
             </div>
           </div>

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,8 @@ import MoodTracker from "./pages/MoodTracker";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import CoreProtectedRoute from "@/components/CoreProtectedRoute";
+import ChatSession from "./pages/ChatSession";
+import VideoCall from "./pages/VideoCall";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,8 @@ const App = () => (
           <Route path="/medication-cart" element={<CoreProtectedRoute><MedicationCart /></CoreProtectedRoute>} />
           <Route path="/medication-payment" element={<CoreProtectedRoute><MedicationPayment /></CoreProtectedRoute>} />
           <Route path="/mood-tracker" element={<CoreProtectedRoute><MoodTracker /></CoreProtectedRoute>} />
+          <Route path="/chat-session" element={<CoreProtectedRoute><ChatSession /></CoreProtectedRoute>} />
+          <Route path="/video-call" element={<CoreProtectedRoute><VideoCall /></CoreProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

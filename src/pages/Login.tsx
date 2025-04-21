@@ -4,23 +4,40 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logIn, isLoggedIn } from "@/utils/auth";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  // Auto redirect to home page if already logged in
-  if (isLoggedIn()) {
-    navigate("/");
-  }
+  useEffect(() => {
+    // Auto redirect to home page or the page they were trying to access if already logged in
+    if (isLoggedIn()) {
+      const returnPath = sessionStorage.getItem("returnPath") || "/";
+      sessionStorage.removeItem("returnPath");
+      navigate(returnPath);
+    }
+  }, [navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    logIn();
-    navigate("/");
+    
+    // For demo purposes, just log in without validation
+    logIn(email);
+    
+    toast({
+      title: "Login Successful",
+      description: "Welcome to SereneMinds!",
+    });
+    
+    // Redirect to the page they were trying to access or home
+    const returnPath = sessionStorage.getItem("returnPath") || "/";
+    sessionStorage.removeItem("returnPath");
+    navigate(returnPath);
   };
 
   return (
