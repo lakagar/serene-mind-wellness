@@ -3,9 +3,9 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, History } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { format, isToday, subDays } from "date-fns";
+import { format, isToday, subDays, parseISO, compareAsc } from "date-fns";
 
 const moods = [
   { label: "Happy", value: "happy", icon: "😊" },
@@ -42,10 +42,23 @@ function getTodayISO() {
 
 const LOCAL_KEY = "mood-tracker-history";
 
+const getLast7Days = () =>
+  Array.from({ length: 7 }).map((_, i) =>
+    format(subDays(new Date(), i), "yyyy-MM-dd")
+  ).reverse();
+
+const getSortedDates = (history: MoodHistory) =>
+  Object.keys(history).sort((a, b) => compareAsc(parseISO(a), parseISO(b)));
+
 const MoodTracker = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [history, setHistory] = useState<MoodHistory>({});
+  const [apiKey, setApiKey] = useState<string>("");
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [loadingSummary, setLoadingSummary] = useState<boolean>(false);
+  const [summaryErr, setSummaryErr] = useState<string | null>(null);
+  const [showAllHistory, setShowAllHistory] = useState<boolean>(false);
 
   // Load history from localStorage when component mounts
   useEffect(() => {
@@ -70,16 +83,113 @@ const MoodTracker = () => {
     setSelectedMood(moodValue);
   };
 
-  // Get last 7 days including today
-  const last7Days = Array.from({ length: 7 }).map((_, i) =>
-    format(subDays(new Date(), i), "yyyy-MM-dd")
-  ).reverse();
+  // --- AI SUMMARY FUNCTIONALITY ---
+  async function fetchAiSummary() {
+    setLoadingSummary(true);
+    setAiSummary(null);
+    setSummaryErr(null);
 
+    const last7 = getLast7Days().filter((d) => !!history[d]);
+    if (!apiKey) {
+      setSummaryErr("Please enter your Perplexity API key.");
+      setLoadingSummary(false);
+      return;
+    }
+    if (last7.length === 0) {
+      setSummaryErr("No mood data available for the last 7 days.");
+      setLoadingSummary(false);
+      return;
+    }
+
+    // build a readable report for AI
+    const dailyLines = last7.map((date) => {
+      const mood = history[date];
+      const moodLabel = moods.find((m) => m.value === mood)?.label || "Unknown";
+      return `${format(parseISO(date), "eeee (MMM d)")}: ${moodLabel}`;
+    }).join("\n");
+
+    const prompt = `
+You are an empathetic mental health coach. 
+Here is a user's 7-day mood journal:
+${dailyLines}
+Please write a short, friendly summary of their weekly mood pattern, highlighting positive changes, repeating feelings, or helpful tips for balance or well-being. Do NOT offer clinical diagnoses. Limit to 2-4 sentences. Be friendly and supportive.
+`;
+
+    try {
+      const response = await fetch("https://api.perplexity.ai/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-sonar-small-128k-online",
+          messages: [
+            { role: "system", content: "Be precise and concise." },
+            { role: "user", content: prompt },
+          ],
+          temperature: 0.2,
+          top_p: 0.9,
+          max_tokens: 400,
+          return_images: false,
+          return_related_questions: false,
+          search_domain_filter: ["perplexity.ai"],
+          search_recency_filter: "month",
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to fetch summary.");
+      const data = await response.json();
+      setAiSummary(data.choices?.[0]?.message?.content || "No summary generated.");
+    } catch (err: any) {
+      setSummaryErr("Could not fetch summary. Is your API key correct?");
+    } finally {
+      setLoadingSummary(false);
+    }
+  }
+
+  // --- HISTORY LIST FOR ALL TIME ---
+  const allDatesSorted = getSortedDates(history);
+
+  // UI
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="container mx-auto px-4 py-10 flex-grow">
         <h1 className="text-3xl font-bold mb-6 text-wellness-dark">Mood Tracker</h1>
+
+        {/* AI Mood Summary */}
+        <div className="max-w-xl mx-auto mb-8">
+          <div className="bg-gradient-to-br from-wellness-primary/30 via-white to-white p-5 rounded-xl shadow flex flex-col gap-4">
+            <div className="flex items-center gap-2 justify-between">
+              <span className="font-semibold flex items-center gap-2 text-lg">
+                <History size={18} /> 
+                AI Mood Summary (Last 7 Days)
+              </span>
+              <Button size="sm" variant="outline" onClick={fetchAiSummary} disabled={loadingSummary}>
+                {loadingSummary ? "Analyzing..." : "Generate"}
+              </Button>
+            </div>
+            <div className="flex flex-col gap-2">
+              <input
+                type="password"
+                placeholder="Perplexity API Key"
+                className="border px-3 py-2 rounded bg-gray-50 text-sm mb-2"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                autoComplete="off"
+              />
+              {summaryErr && (
+                <span className="text-sm text-red-500">{summaryErr}</span>
+              )}
+              {!summaryErr && aiSummary && (
+                <div className="bg-white p-3 rounded text-gray-700 border">{aiSummary}</div>
+              )}
+              {!summaryErr && !aiSummary && !loadingSummary && (
+                <div className="text-gray-400 text-sm">Click "Generate" for a personalized summary.</div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Date Picker */}
         <div className="mb-6 flex flex-col items-center max-w-xs mx-auto">
@@ -120,14 +230,21 @@ const MoodTracker = () => {
           </div>
         </div>
 
-        {/* Mood History */}
+        {/* Mood History: 7 Days & All Time Toggle */}
         <div className="max-w-xl mx-auto mt-10">
-          <h2 className="text-lg font-semibold mb-4 text-wellness-dark">Your Mood for Past 7 Days</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-wellness-dark">
+              {showAllHistory ? "Your Mood (All Time)" : "Your Mood for Past 7 Days"}
+            </h2>
+            <Button size="sm" variant="ghost" onClick={() => setShowAllHistory(s => !s)}>
+              {showAllHistory ? "Show 7 Days" : "Show All"}
+            </Button>
+          </div>
           <div className="bg-white rounded shadow divide-y divide-gray-100">
-            {last7Days.map(dateStr => (
+            {(showAllHistory ? allDatesSorted : getLast7Days()).map(dateStr => (
               <div key={dateStr} className="flex justify-between items-center px-4 py-2">
                 <span className={dateStr === getTodayISO() ? "font-bold" : ""}>
-                  {dateStr === getTodayISO() ? "Today" : format(new Date(dateStr), "eeee, MMM d")}
+                  {dateStr === getTodayISO() ? "Today" : format(parseISO(dateStr), "eeee, MMM d")}
                 </span>
                 <span>
                   {
@@ -138,6 +255,9 @@ const MoodTracker = () => {
                 </span>
               </div>
             ))}
+            {((showAllHistory ? allDatesSorted : getLast7Days()).length === 0) && (
+              <div className="px-4 py-6 text-center text-gray-400">No data yet.</div>
+            )}
           </div>
         </div>
       </main>
