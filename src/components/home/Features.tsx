@@ -1,4 +1,3 @@
-
 import {
   Heart,
   MessageSquare,
@@ -88,6 +87,37 @@ const Features = () => {
               <p className="text-gray-600 flex-grow">{feature.description}</p>
             </a>
           ))}
+          {/* Add new links for Self-Help, Medication, and Mood Tracker */}
+          <a 
+            href="/self-help"
+            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col"
+          >
+            <div className="mb-4 p-3 rounded-lg bg-wellness-light inline-flex">
+              <span role="img" aria-label="Self-Help" className="text-xl">🧰</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-wellness-dark">Self-Help Tools</h3>
+            <p className="text-gray-600 flex-grow">Explore practical exercises, journaling, and tools for self-improvement.</p>
+          </a>
+          <a 
+            href="/medication"
+            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col"
+          >
+            <div className="mb-4 p-3 rounded-lg bg-wellness-light inline-flex">
+              <span role="img" aria-label="Medication" className="text-xl">💊</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-wellness-dark">Medication Management</h3>
+            <p className="text-gray-600 flex-grow">Order mental health medication for home delivery and manage your refills.</p>
+          </a>
+          <a 
+            href="/mood-tracker"
+            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col"
+          >
+            <div className="mb-4 p-3 rounded-lg bg-wellness-light inline-flex">
+              <span role="img" aria-label="Mood" className="text-xl">📊</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-wellness-dark">Mood Tracker</h3>
+            <p className="text-gray-600 flex-grow">Log your mood and receive AI-powered suggestions for your wellbeing.</p>
+          </a>
         </div>
       </div>
     </section>

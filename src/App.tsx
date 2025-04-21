@@ -9,6 +9,11 @@ import Counseling from "./pages/Counseling";
 import Groups from "./pages/Groups";
 import Meditation from "./pages/Meditation";
 import NotFound from "./pages/NotFound";
+import SelfHelp from "./pages/SelfHelp";
+import Medication from "./pages/Medication";
+import MedicationCart from "./pages/MedicationCart";
+import MedicationPayment from "./pages/MedicationPayment";
+import MoodTracker from "./pages/MoodTracker";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +29,11 @@ const App = () => (
           <Route path="/counseling" element={<Counseling />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/meditation" element={<Meditation />} />
+          <Route path="/self-help" element={<SelfHelp />} />
+          <Route path="/medication" element={<Medication />} />
+          <Route path="/medication-cart" element={<MedicationCart />} />
+          <Route path="/medication-payment" element={<MedicationPayment />} />
+          <Route path="/mood-tracker" element={<MoodTracker />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
