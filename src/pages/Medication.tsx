@@ -1,9 +1,9 @@
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import PrescriptionDialog from "@/components/medication/PrescriptionDialog";
 
 const medications = [
   { id: 1, name: "Sertraline 50mg", desc: "A commonly used SSRI antidepressant to treat depression and anxiety.", price: 12, category: "Antidepressant" },
@@ -35,20 +35,23 @@ const Medication = () => {
       <main className="flex-grow container mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-8 text-wellness-dark">Medication Delivery</h1>
 
-        <div className="mb-6 flex items-center gap-4">
-          <label htmlFor="category" className="text-md font-medium">
-            Filter by Category:
-          </label>
-          <select
-            id="category"
-            className="border rounded px-3 py-2 bg-white"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+          <div className="flex items-center gap-4 mb-4 md:mb-0">
+            <label htmlFor="category" className="text-md font-medium">
+              Filter by Category:
+            </label>
+            <select
+              id="category"
+              className="border rounded px-3 py-2 bg-white"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+          <PrescriptionDialog />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
