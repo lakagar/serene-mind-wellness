@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,8 @@ import Signup from "./pages/Signup";
 import CoreProtectedRoute from "@/components/CoreProtectedRoute";
 import ChatSession from "./pages/ChatSession";
 import VideoCall from "./pages/VideoCall";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,8 @@ const App = () => (
 
           {/* Protected routes: wrap in CoreProtectedRoute */}
           <Route path="/" element={<CoreProtectedRoute><Index /></CoreProtectedRoute>} />
+          <Route path="/profile" element={<CoreProtectedRoute><Profile /></CoreProtectedRoute>} />
+          <Route path="/settings" element={<CoreProtectedRoute><Settings /></CoreProtectedRoute>} />
           <Route path="/ai-chat" element={<CoreProtectedRoute><AiChat /></CoreProtectedRoute>} />
           <Route path="/counseling" element={<CoreProtectedRoute><Counseling /></CoreProtectedRoute>} />
           <Route path="/groups" element={<CoreProtectedRoute><Groups /></CoreProtectedRoute>} />
