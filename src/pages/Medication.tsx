@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PrescriptionDialog from "@/components/medication/PrescriptionDialog";
+import { IndianRupee } from "lucide-react";
 
 const medications = [
-  { id: 1, name: "Sertraline 50mg", desc: "A commonly used SSRI antidepressant to treat depression and anxiety.", price: 12, category: "Antidepressant" },
-  { id: 2, name: "Alprazolam 0.5mg", desc: "A fast-acting benzodiazepine for managing anxiety and acute distress.", price: 10, category: "Anxiolytic" },
-  { id: 3, name: "Propranolol 20mg", desc: "A beta-blocker for controlling physical anxiety symptoms, like rapid heartbeat.", price: 8, category: "Beta Blocker" },
-  { id: 4, name: "Escitalopram 10mg", desc: "SSRI for depression and generalized anxiety disorder.", price: 14, category: "Antidepressant" },
-  { id: 5, name: "Buspirone 5mg", desc: "Non-benzodiazepine anxiolytic for chronic anxiety.", price: 9, category: "Anxiolytic" },
+  { id: 1, name: "Sertraline 50mg", desc: "A commonly used SSRI antidepressant to treat depression and anxiety.", price: 900, category: "Antidepressant" },
+  { id: 2, name: "Alprazolam 0.5mg", desc: "A fast-acting benzodiazepine for managing anxiety and acute distress.", price: 750, category: "Anxiolytic" },
+  { id: 3, name: "Propranolol 20mg", desc: "A beta-blocker for controlling physical anxiety symptoms, like rapid heartbeat.", price: 600, category: "Beta Blocker" },
+  { id: 4, name: "Escitalopram 10mg", desc: "SSRI for depression and generalized anxiety disorder.", price: 1050, category: "Antidepressant" },
+  { id: 5, name: "Buspirone 5mg", desc: "Non-benzodiazepine anxiolytic for chronic anxiety.", price: 680, category: "Anxiolytic" },
 ];
 
 const categories = ["All", ...Array.from(new Set(medications.map(m => m.category)))];
@@ -61,7 +62,10 @@ const Medication = () => {
               <p className="text-gray-600 mb-2">{med.desc}</p>
               <div className="text-xs bg-wellness-primary/10 px-2 py-1 rounded self-start mb-2 font-medium text-wellness-primary">{med.category}</div>
               <div className="flex items-center gap-2 mt-auto">
-                <span className="text-wellness-primary font-bold mr-4">${med.price}</span>
+                <span className="text-wellness-primary font-bold mr-4 flex items-center">
+                  <IndianRupee className="h-4 w-4 mr-1" />
+                  {med.price}
+                </span>
                 <Button onClick={() => addToCart(med.id)} disabled={cart.includes(med.id)}>Add to Cart</Button>
               </div>
             </div>

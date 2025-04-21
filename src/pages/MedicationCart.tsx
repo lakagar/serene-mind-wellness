@@ -3,13 +3,14 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { IndianRupee } from "lucide-react";
 
 const allMeds = [
-  { id: 1, name: "Sertraline 50mg", desc: "A commonly used SSRI antidepressant to treat depression and anxiety.", price: 12, category: "Antidepressant" },
-  { id: 2, name: "Alprazolam 0.5mg", desc: "A fast-acting benzodiazepine for managing anxiety and acute distress.", price: 10, category: "Anxiolytic" },
-  { id: 3, name: "Propranolol 20mg", desc: "A beta-blocker for controlling physical anxiety symptoms, like rapid heartbeat.", price: 8, category: "Beta Blocker" },
-  { id: 4, name: "Escitalopram 10mg", desc: "SSRI for depression and generalized anxiety disorder.", price: 14, category: "Antidepressant" },
-  { id: 5, name: "Buspirone 5mg", desc: "Non-benzodiazepine anxiolytic for chronic anxiety.", price: 9, category: "Anxiolytic" },
+  { id: 1, name: "Sertraline 50mg", desc: "A commonly used SSRI antidepressant to treat depression and anxiety.", price: 900, category: "Antidepressant" },
+  { id: 2, name: "Alprazolam 0.5mg", desc: "A fast-acting benzodiazepine for managing anxiety and acute distress.", price: 750, category: "Anxiolytic" },
+  { id: 3, name: "Propranolol 20mg", desc: "A beta-blocker for controlling physical anxiety symptoms, like rapid heartbeat.", price: 600, category: "Beta Blocker" },
+  { id: 4, name: "Escitalopram 10mg", desc: "SSRI for depression and generalized anxiety disorder.", price: 1050, category: "Antidepressant" },
+  { id: 5, name: "Buspirone 5mg", desc: "Non-benzodiazepine anxiolytic for chronic anxiety.", price: 680, category: "Anxiolytic" },
 ];
 
 const MedicationCart = () => {
@@ -46,11 +47,16 @@ const MedicationCart = () => {
                     <div className="text-gray-600 text-xs mb-1">{med.desc}</div>
                     <span className="text-xs bg-wellness-primary/10 px-2 py-1 rounded font-medium text-wellness-primary mr-2">{med.category}</span>
                   </div>
-                  <div className="font-bold text-wellness-primary">${med.price}</div>
+                  <div className="font-bold text-wellness-primary flex items-center">
+                    <IndianRupee className="h-4 w-4 mr-1" />
+                    {med.price}
+                  </div>
                 </li>
               ))}
             </ul>
-            <div className="mb-4 font-semibold">Total: ${total}</div>
+            <div className="mb-4 font-semibold flex items-center">
+              Total: <IndianRupee className="h-4 w-4 mx-1" />{total}
+            </div>
             <Button onClick={handleCheckout} className="mr-3">Proceed to Payment</Button>
             <Button asChild variant="outline">
               <Link to="/medication">Back to Medications</Link>
