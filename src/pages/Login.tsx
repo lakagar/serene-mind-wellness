@@ -2,17 +2,25 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { logIn, isLoggedIn } from "@/utils/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  // Auto redirect to home page if already logged in
+  if (isLoggedIn()) {
+    navigate("/");
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Login functionality coming soon!");
+    logIn();
+    navigate("/");
   };
 
   return (

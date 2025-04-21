@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +16,7 @@ import MedicationPayment from "./pages/MedicationPayment";
 import MoodTracker from "./pages/MoodTracker";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import CoreProtectedRoute from "@/components/CoreProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -27,18 +27,21 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/ai-chat" element={<AiChat />} />
-          <Route path="/counseling" element={<Counseling />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/meditation" element={<Meditation />} />
-          <Route path="/self-help" element={<SelfHelp />} />
-          <Route path="/medication" element={<Medication />} />
-          <Route path="/medication-cart" element={<MedicationCart />} />
-          <Route path="/medication-payment" element={<MedicationPayment />} />
-          <Route path="/mood-tracker" element={<MoodTracker />} />
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
+          {/* Protected routes: wrap in CoreProtectedRoute */}
+          <Route path="/" element={<CoreProtectedRoute><Index /></CoreProtectedRoute>} />
+          <Route path="/ai-chat" element={<CoreProtectedRoute><AiChat /></CoreProtectedRoute>} />
+          <Route path="/counseling" element={<CoreProtectedRoute><Counseling /></CoreProtectedRoute>} />
+          <Route path="/groups" element={<CoreProtectedRoute><Groups /></CoreProtectedRoute>} />
+          <Route path="/meditation" element={<CoreProtectedRoute><Meditation /></CoreProtectedRoute>} />
+          <Route path="/self-help" element={<CoreProtectedRoute><SelfHelp /></CoreProtectedRoute>} />
+          <Route path="/medication" element={<CoreProtectedRoute><Medication /></CoreProtectedRoute>} />
+          <Route path="/medication-cart" element={<CoreProtectedRoute><MedicationCart /></CoreProtectedRoute>} />
+          <Route path="/medication-payment" element={<CoreProtectedRoute><MedicationPayment /></CoreProtectedRoute>} />
+          <Route path="/mood-tracker" element={<CoreProtectedRoute><MoodTracker /></CoreProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

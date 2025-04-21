@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -37,6 +36,14 @@ const AiChat = () => {
     "That's a common feeling many people experience. Would you like to learn some strategies that might help?",
     "It takes courage to talk about these feelings. How long have you been experiencing this?",
     "I'm here to listen and support you. Would it help to explore some grounding exercises together?",
+    // Expanded customer query support:
+    "For medicine orders: You can check your order status in the Medication section. Would you like help finding your order?",
+    "Our counseling sessions can be booked online or via phone. Do you want guidance on booking?",
+    "Group sessions are available weekly. Would you like to see the upcoming schedule?",
+    "If you're having trouble logging in or signing up, please let me know. I can offer troubleshooting steps.",
+    "For refunds or payments, please make sure your information is up to date in your profile.",
+    "Do you have questions about our wellness product categories or which might be best for you?",
+    "If you need urgent assistance, please reach out via the Contact section or call our helpline.",
   ];
 
   // Auto-scroll to bottom when new messages come in
