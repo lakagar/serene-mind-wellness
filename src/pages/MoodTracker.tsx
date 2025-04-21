@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useState, useEffect } from "react";
@@ -7,6 +6,7 @@ import { Calendar as CalendarIcon, History } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format, isToday, subDays, parseISO, compareAsc } from "date-fns";
 import { toast } from "sonner";
+import TherapistReport from "@/components/mood/TherapistReport";
 
 const moods = [
   { label: "Happy", value: "happy", icon: "😊" },
@@ -313,6 +313,16 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
             {getSuggestion(selectedMood || "")}
           </div>
         </div>
+
+        {/* Therapist Report Section */}
+        <TherapistReport 
+          history={history} 
+          apiKey={apiKey} 
+          onError={(message) => {
+            setSummaryErr(message);
+            setUseLocalSummary(true);
+          }} 
+        />
 
         {/* Mood History: 7 Days & All Time Toggle */}
         <div className="max-w-xl mx-auto mt-10">
