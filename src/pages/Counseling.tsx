@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Video, MessageSquare, Users, Clock, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const therapists = [
   {
@@ -49,8 +50,8 @@ const therapists = [
   },
 ];
 
-const SessionCard = ({ name, type, icon }: { name: string; type: string; icon: React.ReactNode }) => (
-  <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+const SessionCard = ({ name, type, icon, onClick }: { name: string; type: string; icon: React.ReactNode; onClick: () => void }) => (
+  <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
     <CardContent className="p-6">
       <div className="flex flex-col items-center text-center">
         <div className="bg-wellness-light rounded-full p-3 mb-4">
@@ -63,63 +64,96 @@ const SessionCard = ({ name, type, icon }: { name: string; type: string; icon: R
   </Card>
 );
 
-const TherapistCard = ({ therapist }: { therapist: typeof therapists[0] }) => (
-  <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-    <CardContent className="p-6">
-      <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
-        <div className="flex-shrink-0">
-          <img 
-            src={therapist.image} 
-            alt={therapist.name}
-            className="w-24 h-24 rounded-full object-cover border-4 border-wellness-light" 
-          />
-        </div>
-        <div className="flex-grow text-center sm:text-left">
-          <h3 className="text-lg font-medium mb-1">{therapist.name}</h3>
-          <p className="text-wellness-primary font-medium mb-2">{therapist.specialty}</p>
-          <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
-            <span className="bg-wellness-light text-wellness-secondary text-xs px-2 py-1 rounded-full">
-              {therapist.experience}
-            </span>
-            <span className="bg-wellness-light text-wellness-secondary text-xs px-2 py-1 rounded-full">
-              {therapist.education}
-            </span>
+const TherapistCard = ({ therapist }: { therapist: typeof therapists[0] }) => {
+  const navigate = useNavigate();
+  
+  const startVideoSession = () => {
+    navigate('/video-call');
+  };
+  
+  const startChatSession = () => {
+    navigate('/chat-session');
+  };
+  
+  return (
+    <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
+          <div className="flex-shrink-0">
+            <img 
+              src={therapist.image} 
+              alt={therapist.name}
+              className="w-24 h-24 rounded-full object-cover border-4 border-wellness-light" 
+            />
           </div>
-          <div className="flex items-center gap-1 justify-center sm:justify-start mb-4">
-            {[...Array(5)].map((_, i) => (
-              <svg
-                key={i}
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill={i < Math.round(therapist.rating) ? "#9b87f5" : "#e2e8f0"}
-                className="inline-block"
+          <div className="flex-grow text-center sm:text-left">
+            <h3 className="text-lg font-medium mb-1">{therapist.name}</h3>
+            <p className="text-wellness-primary font-medium mb-2">{therapist.specialty}</p>
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
+              <span className="bg-wellness-light text-wellness-secondary text-xs px-2 py-1 rounded-full">
+                {therapist.experience}
+              </span>
+              <span className="bg-wellness-light text-wellness-secondary text-xs px-2 py-1 rounded-full">
+                {therapist.education}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 justify-center sm:justify-start mb-4">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill={i < Math.round(therapist.rating) ? "#9b87f5" : "#e2e8f0"}
+                  className="inline-block"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              ))}
+              <span className="text-sm text-gray-600 ml-1">{therapist.rating}</span>
+            </div>
+            <div className="flex items-center gap-2 justify-center sm:justify-start text-sm text-gray-600 mb-4">
+              <Calendar size={14} />
+              <span>Available: {therapist.availability}</span>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+              <Button 
+                className="bg-wellness-primary hover:bg-wellness-secondary"
+                onClick={startVideoSession}
               >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            ))}
-            <span className="text-sm text-gray-600 ml-1">{therapist.rating}</span>
-          </div>
-          <div className="flex items-center gap-2 justify-center sm:justify-start text-sm text-gray-600 mb-4">
-            <Calendar size={14} />
-            <span>Available: {therapist.availability}</span>
-          </div>
-          <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-            <Button className="bg-wellness-primary hover:bg-wellness-secondary">
-              Book Video Session
-            </Button>
-            <Button variant="outline" className="border-wellness-primary text-wellness-primary">
-              Book Chat Session
-            </Button>
+                Book Video Session
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-wellness-primary text-wellness-primary"
+                onClick={startChatSession}
+              >
+                Book Chat Session
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 const Counseling = () => {
+  const navigate = useNavigate();
+  
+  const goToVideoSession = () => {
+    navigate('/video-call');
+  };
+  
+  const goToChatSession = () => {
+    navigate('/chat-session');
+  };
+  
+  const goToGroupSession = () => {
+    navigate('/groups');
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -135,10 +169,18 @@ const Counseling = () => {
                 Connect with licensed mental health professionals through video calls or chat sessions for personalized care and guidance.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg" className="bg-wellness-primary hover:bg-wellness-secondary">
+                <Button 
+                  size="lg" 
+                  className="bg-wellness-primary hover:bg-wellness-secondary"
+                  onClick={goToVideoSession}
+                >
                   Book a Session Now
                 </Button>
-                <Button size="lg" variant="outline" className="border-wellness-primary text-wellness-primary">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-wellness-primary text-wellness-primary"
+                >
                   View Available Therapists
                 </Button>
               </div>
@@ -154,17 +196,20 @@ const Counseling = () => {
               <SessionCard 
                 name="Video Counseling" 
                 type="Face-to-face virtual sessions" 
-                icon={<Video className="h-8 w-8 text-wellness-primary" />} 
+                icon={<Video className="h-8 w-8 text-wellness-primary" />}
+                onClick={goToVideoSession}
               />
               <SessionCard 
                 name="Chat Counseling" 
                 type="Text-based therapy sessions" 
-                icon={<MessageSquare className="h-8 w-8 text-wellness-primary" />} 
+                icon={<MessageSquare className="h-8 w-8 text-wellness-primary" />}
+                onClick={goToChatSession}
               />
               <SessionCard 
                 name="Group Sessions" 
                 type="Supportive community therapy" 
-                icon={<Users className="h-8 w-8 text-wellness-primary" />} 
+                icon={<Users className="h-8 w-8 text-wellness-primary" />}
+                onClick={goToGroupSession}
               />
             </div>
           </div>
