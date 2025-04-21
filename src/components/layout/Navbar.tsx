@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -11,6 +11,7 @@ import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -52,10 +53,10 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="hidden md:flex">
+          <Button variant="ghost" size="sm" className="hidden md:flex" onClick={() => navigate('/login')}>
             Sign In
           </Button>
-          <Button size="sm" className="hidden md:flex bg-wellness-primary hover:bg-wellness-secondary">
+          <Button size="sm" className="hidden md:flex bg-wellness-primary hover:bg-wellness-secondary" onClick={() => navigate('/signup')}>
             Get Started
           </Button>
 
@@ -92,10 +93,10 @@ const Navbar = () => {
                   ))}
                 </div>
                 <div className="grid gap-2">
-                  <Button variant="ghost" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" onClick={() => { setIsOpen(false); navigate('/login'); }}>
                     Sign In
                   </Button>
-                  <Button className="bg-wellness-primary hover:bg-wellness-secondary" onClick={() => setIsOpen(false)}>
+                  <Button className="bg-wellness-primary hover:bg-wellness-secondary" onClick={() => { setIsOpen(false); navigate('/signup'); }}>
                     Get Started
                   </Button>
                 </div>

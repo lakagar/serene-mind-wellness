@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const allMeds = [
-  { id: 1, name: "Sertraline 50mg", price: 12 },
-  { id: 2, name: "Alprazolam 0.5mg", price: 10 },
-  { id: 3, name: "Propranolol 20mg", price: 8 },
+  { id: 1, name: "Sertraline 50mg", desc: "A commonly used SSRI antidepressant to treat depression and anxiety.", price: 12, category: "Antidepressant" },
+  { id: 2, name: "Alprazolam 0.5mg", desc: "A fast-acting benzodiazepine for managing anxiety and acute distress.", price: 10, category: "Anxiolytic" },
+  { id: 3, name: "Propranolol 20mg", desc: "A beta-blocker for controlling physical anxiety symptoms, like rapid heartbeat.", price: 8, category: "Beta Blocker" },
+  { id: 4, name: "Escitalopram 10mg", desc: "SSRI for depression and generalized anxiety disorder.", price: 14, category: "Antidepressant" },
+  { id: 5, name: "Buspirone 5mg", desc: "Non-benzodiazepine anxiolytic for chronic anxiety.", price: 9, category: "Anxiolytic" },
 ];
 
 const MedicationCart = () => {
@@ -38,9 +40,13 @@ const MedicationCart = () => {
           <div>
             <ul className="mb-6">
               {medsInCart.map((med) => (
-                <li key={med.id} className="mb-2">
-                  <span>{med.name} - </span>
-                  <span className="text-wellness-primary font-bold">${med.price}</span>
+                <li key={med.id} className="mb-4 p-4 bg-white rounded-lg shadow flex gap-4 flex-col sm:flex-row items-start sm:items-center border border-gray-100">
+                  <div className="flex-1">
+                    <div className="font-semibold text-md">{med.name}</div>
+                    <div className="text-gray-600 text-xs mb-1">{med.desc}</div>
+                    <span className="text-xs bg-wellness-primary/10 px-2 py-1 rounded font-medium text-wellness-primary mr-2">{med.category}</span>
+                  </div>
+                  <div className="font-bold text-wellness-primary">${med.price}</div>
                 </li>
               ))}
             </ul>
