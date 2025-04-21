@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,10 +7,13 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Menu, X } from 'lucide-react';
+import { isLoggedIn } from '@/utils/auth';
+import ProfileIcon from '@/components/ProfileIcon';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const loggedIn = isLoggedIn();
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -53,12 +55,18 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="hidden md:flex" onClick={() => navigate('/login')}>
-            Sign In
-          </Button>
-          <Button size="sm" className="hidden md:flex bg-wellness-primary hover:bg-wellness-secondary" onClick={() => navigate('/signup')}>
-            Get Started
-          </Button>
+          {loggedIn ? (
+            <ProfileIcon />
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={() => navigate('/login')}>
+                Sign In
+              </Button>
+              <Button size="sm" className="hidden md:flex bg-wellness-primary hover:bg-wellness-secondary" onClick={() => navigate('/signup')}>
+                Get Started
+              </Button>
+            </>
+          )}
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
