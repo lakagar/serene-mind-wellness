@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import {
 import { Menu, X } from 'lucide-react';
 import { isLoggedIn } from '@/utils/auth';
 import ProfileIcon from '@/components/ProfileIcon';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,6 +57,7 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {loggedIn ? (
             <ProfileIcon />
           ) : (
