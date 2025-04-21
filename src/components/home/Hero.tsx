@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -9,10 +8,10 @@ const Hero = () => {
       <div className="container relative z-10 mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
         <div className="flex-1 space-y-6">
           <div className="inline-block rounded-full bg-wellness-primary/10 px-3 py-1 text-sm text-wellness-secondary mb-2">
-            Your journey to better mental health starts here
+            Mindful Connection: Your journey to better mental health starts here
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-wellness-dark">
-            Find Peace and Balance with SereneMinds
+            Find Peace and Balance with Healing Minds
           </h1>
           <p className="text-lg text-gray-600 max-w-xl">
             Professional mental health support, AI-assisted tools, and guidance accessible anywhere, anytime. Start your wellness journey today.

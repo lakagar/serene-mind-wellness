@@ -23,7 +23,7 @@ const Cta = () => {
             Ready to Start Your Wellness Journey?
           </h2>
           <p className="text-white/90 max-w-xl">
-            Join thousands of others who have found support, guidance, and tools to improve their mental wellbeing with SereneMinds.
+            Join thousands of others who have found support, guidance, and tools to improve their mental wellbeing with Healing Minds.
           </p>
         </div>
         

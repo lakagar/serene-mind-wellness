@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,9 @@ const Signup = () => {
       <Navbar />
       <main className="flex flex-grow items-center justify-center bg-soft-purple">
         <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center text-wellness-dark">Create your SereneMinds account</h1>
+          <h1 className="text-2xl font-bold mb-6 text-center text-wellness-dark">
+            Create your Healing Minds account
+          </h1>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input
               id="signup-email"

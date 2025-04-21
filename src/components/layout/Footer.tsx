@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -15,10 +14,11 @@ const Footer = () => {
                 <path d="m15 18-2-2" />
               </svg>
             </div>
-            <span className="text-lg font-semibold text-wellness-dark">SereneMinds</span>
+            <span className="text-lg font-semibold text-wellness-dark">Healing Minds</span>
           </Link>
-          <p className="text-sm">Mental wellness and support for everyone, anytime, anywhere.</p>
+          <p className="text-sm">Mindful Connection: Mental wellness and support for everyone, anytime, anywhere.</p>
         </div>
+
         
         <div className="space-y-3">
           <h3 className="text-sm font-medium">Services</h3>

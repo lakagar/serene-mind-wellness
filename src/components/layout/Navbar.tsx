@@ -38,7 +38,7 @@ const Navbar = () => {
               <path d="m15 18-2-2" />
             </svg>
           </div>
-          <span className="text-xl font-semibold text-wellness-dark">SereneMinds</span>
+          <span className="text-xl font-semibold text-wellness-dark">Healing Minds</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -86,7 +86,7 @@ const Navbar = () => {
                       <path d="m15 18-2-2" />
                     </svg>
                   </div>
-                  <span className="text-xl font-semibold text-wellness-dark">SereneMinds</span>
+                  <span className="text-xl font-semibold text-wellness-dark">Healing Minds</span>
                 </Link>
                 <div className="grid gap-3">
                   {navLinks.map((link) => (
