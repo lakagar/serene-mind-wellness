@@ -7,13 +7,14 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, isToday, subDays, parseISO, compareAsc } from "date-fns";
 import { toast } from "sonner";
 import TherapistReport from "@/components/mood/TherapistReport";
+import { useTranslation } from "react-i18next";
 
 const moods = [
-  { label: "Happy", value: "happy", icon: "😊" },
-  { label: "Calm", value: "calm", icon: "😌" },
-  { label: "Anxious", value: "anxious", icon: "😰" },
-  { label: "Sad", value: "sad", icon: "😢" },
-  { label: "Angry", value: "angry", icon: "😠" },
+  { label: "happy", value: "happy", icon: "😊" },
+  { label: "calm", value: "calm", icon: "😌" },
+  { label: "anxious", value: "anxious", icon: "😰" },
+  { label: "sad", value: "sad", icon: "😢" },
+  { label: "angry", value: "angry", icon: "😠" },
 ];
 
 function getSuggestion(mood: string): string {
@@ -104,6 +105,7 @@ const getSortedDates = (history: MoodHistory) =>
   Object.keys(history).sort((a, b) => compareAsc(parseISO(a), parseISO(b)));
 
 const MoodTracker = () => {
+  const { t } = useTranslation();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [history, setHistory] = useState<MoodHistory>({});
@@ -228,7 +230,9 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="container mx-auto px-4 py-10 flex-grow">
-        <h1 className="text-3xl font-bold mb-6 text-wellness-dark">Mood Tracker</h1>
+        <h1 className="text-3xl font-bold mb-6 text-wellness-dark">
+          {t('mood.title')}
+        </h1>
 
         {/* AI Mood Summary */}
         <div className="max-w-xl mx-auto mb-8">
@@ -278,7 +282,7 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
         {/* Date Picker */}
         <div className="mb-6 flex flex-col items-center max-w-xs mx-auto">
           <label className="mb-1 text-sm text-gray-600 font-medium flex items-center gap-2">
-            <CalendarIcon size={18} /> Select Date
+            <CalendarIcon size={18} /> {t('mood.selectDate')}
           </label>
           <Calendar
             mode="single"
@@ -287,7 +291,9 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
             className="rounded-md border shadow"
             disabled={(date) => date > new Date()}
           />
-          <span className="mt-2 text-xs text-gray-500">{isToday(selectedDate) ? "Today" : format(selectedDate, "eeee, dd MMM yyyy")}</span>
+          <span className="mt-2 text-xs text-gray-500">
+            {isToday(selectedDate) ? t('mood.today') : format(selectedDate, "eeee, dd MMM yyyy")}
+          </span>
         </div>
 
         {/* Mood Selector */}
@@ -300,7 +306,7 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
                   ${selectedMood === mood.value ? "bg-wellness-primary/20 border-wellness-primary" : "bg-white border-gray-300"}
                 `}
                 onClick={() => handleSelectMood(mood.value)}
-                aria-label={mood.label}
+                aria-label={t(`mood.${mood.label}`)}
                 type="button"
               >
                 <span>{mood.icon}</span>
@@ -308,6 +314,8 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
             ))}
           </div>
         </div>
+
+        {/* Suggestion Display */}
         <div className="max-w-xl mx-auto text-center">
           <div className="p-5 bg-white rounded-xl shadow text-lg min-h-[100px] flex items-center justify-center">
             {getSuggestion(selectedMood || "")}
@@ -324,14 +332,14 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
           }} 
         />
 
-        {/* Mood History: 7 Days & All Time Toggle */}
+        {/* Mood History */}
         <div className="max-w-xl mx-auto mt-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-wellness-dark">
-              {showAllHistory ? "Your Mood (All Time)" : "Your Mood for Past 7 Days"}
+              {showAllHistory ? t('mood.allTime') : t('mood.last7Days')}
             </h2>
             <Button size="sm" variant="ghost" onClick={() => setShowAllHistory(s => !s)}>
-              {showAllHistory ? "Show 7 Days" : "Show All"}
+              {showAllHistory ? t('mood.show7Days') : t('mood.showAll')}
             </Button>
           </div>
           <div className="bg-white rounded shadow divide-y divide-gray-100">

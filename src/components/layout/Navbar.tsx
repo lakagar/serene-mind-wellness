@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,22 +11,25 @@ import { Menu, X } from 'lucide-react';
 import { isLoggedIn } from '@/utils/auth';
 import ProfileIcon from '@/components/ProfileIcon';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import LanguageSelector from '@/components/language/LanguageSelector';
 import Logo from './Logo';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const loggedIn = isLoggedIn();
+  const { t } = useTranslation();
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'AI Chat', href: '/ai-chat' },
-    { name: 'Counseling', href: '/counseling' },
-    { name: 'Group Sessions', href: '/groups' },
-    { name: 'Meditation', href: '/meditation' },
-    { name: 'Self Help', href: '/self-help' },
-    { name: 'Medication', href: '/medication' },
-    { name: 'Mood Tracker', href: '/mood-tracker' },
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.aiChat'), href: '/ai-chat' },
+    { name: t('nav.counseling'), href: '/counseling' },
+    { name: t('nav.groups'), href: '/groups' },
+    { name: t('nav.meditation'), href: '/meditation' },
+    { name: t('nav.selfHelp'), href: '/self-help' },
+    { name: t('nav.medication'), href: '/medication' },
+    { name: t('nav.moodTracker'), href: '/mood-tracker' },
   ];
 
   return (
@@ -47,6 +51,7 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-4">
+          <LanguageSelector />
           <ThemeToggle />
           {loggedIn ? (
             <ProfileIcon />
