@@ -1,4 +1,3 @@
-
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -11,6 +10,19 @@ i18n
     resources: {
       en: {
         translation: {
+          brand: {
+            name: 'Healing Minds',
+            tagline: 'Mindful Connection: Mental wellness and support for everyone, anytime, anywhere.',
+          },
+          footer: {
+            services: 'Services',
+            tools: 'Tools',
+            legal: 'Legal',
+            privacy: 'Privacy Policy',
+            terms: 'Terms of Service',
+            contact: 'Contact Us',
+            copyright: '© 2025 SereneMinds. All rights reserved.',
+          },
           nav: {
             home: 'Home',
             aiChat: 'AI Chat',
@@ -40,10 +52,23 @@ i18n
             show7Days: 'Show 7 Days',
             showAll: 'Show All',
           },
-        },
+        }
       },
       hi: {
         translation: {
+          brand: {
+            name: 'हीलिंग माइंड्स',
+            tagline: 'माइंडफुल कनेक्शन: सभी के लिए मानसिक स्वास्थ्य और सहायता, कभी भी, कहीं भी।',
+          },
+          footer: {
+            services: 'सेवाएं',
+            tools: 'टूल्स',
+            legal: 'कानूनी',
+            privacy: 'गोपनीयता नीति',
+            terms: 'सेवा की शर्तें',
+            contact: 'संपर्क करें',
+            copyright: '© 2025 सेरेनमाइंड्स। सर्वाधिकार सुरक्षित।',
+          },
           nav: {
             home: 'होम',
             aiChat: 'एआई चैट',
@@ -73,10 +98,23 @@ i18n
             show7Days: '7 दिन दिखाएं',
             showAll: 'सभी दिखाएं',
           },
-        },
+        }
       },
       es: {
         translation: {
+          brand: {
+            name: 'Healing Minds',
+            tagline: 'Conexión Consciente: Bienestar mental y apoyo para todos, en cualquier momento, en cualquier lugar.',
+          },
+          footer: {
+            services: 'Servicios',
+            tools: 'Herramientas',
+            legal: 'Legal',
+            privacy: 'Política de Privacidad',
+            terms: 'Términos de Servicio',
+            contact: 'Contáctenos',
+            copyright: '© 2025 SereneMinds. Todos los derechos reservados.',
+          },
           nav: {
             home: 'Inicio',
             aiChat: 'Chat IA',
@@ -106,8 +144,8 @@ i18n
             show7Days: 'Mostrar 7 días',
             showAll: 'Mostrar Todo',
           },
-        },
-      },
+        }
+      }
     },
     interpolation: {
       escapeValue: false,

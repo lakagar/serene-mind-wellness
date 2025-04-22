@@ -1,6 +1,10 @@
+
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
+  
   return (
     <footer className="border-t bg-muted/40 py-8">
       <div className="container grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -14,43 +18,42 @@ const Footer = () => {
                 <path d="m15 18-2-2" />
               </svg>
             </div>
-            <span className="text-lg font-semibold text-wellness-dark">Healing Minds</span>
+            <span className="text-lg font-semibold text-wellness-dark">{t('brand.name')}</span>
           </Link>
-          <p className="text-sm">Mindful Connection: Mental wellness and support for everyone, anytime, anywhere.</p>
+          <p className="text-sm">{t('brand.tagline')}</p>
         </div>
 
-        
         <div className="space-y-3">
-          <h3 className="text-sm font-medium">Services</h3>
+          <h3 className="text-sm font-medium">{t('footer.services')}</h3>
           <ul className="grid gap-2 text-sm">
-            <li><Link to="/ai-chat" className="transition-colors hover:text-wellness-primary">AI Chat Support</Link></li>
-            <li><Link to="/counseling" className="transition-colors hover:text-wellness-primary">Professional Counseling</Link></li>
-            <li><Link to="/groups" className="transition-colors hover:text-wellness-primary">Group Sessions</Link></li>
-            <li><Link to="/meditation" className="transition-colors hover:text-wellness-primary">Guided Meditation</Link></li>
+            <li><Link to="/ai-chat" className="transition-colors hover:text-wellness-primary">{t('nav.aiChat')}</Link></li>
+            <li><Link to="/counseling" className="transition-colors hover:text-wellness-primary">{t('nav.counseling')}</Link></li>
+            <li><Link to="/groups" className="transition-colors hover:text-wellness-primary">{t('nav.groups')}</Link></li>
+            <li><Link to="/meditation" className="transition-colors hover:text-wellness-primary">{t('nav.meditation')}</Link></li>
           </ul>
         </div>
         
         <div className="space-y-3">
-          <h3 className="text-sm font-medium">Tools</h3>
+          <h3 className="text-sm font-medium">{t('footer.tools')}</h3>
           <ul className="grid gap-2 text-sm">
-            <li><Link to="/self-help" className="transition-colors hover:text-wellness-primary">Self-Help Resources</Link></li>
-            <li><Link to="/medication" className="transition-colors hover:text-wellness-primary">Medication Management</Link></li>
-            <li><Link to="/mood-tracker" className="transition-colors hover:text-wellness-primary">Mood Tracking</Link></li>
+            <li><Link to="/self-help" className="transition-colors hover:text-wellness-primary">{t('nav.selfHelp')}</Link></li>
+            <li><Link to="/medication" className="transition-colors hover:text-wellness-primary">{t('nav.medication')}</Link></li>
+            <li><Link to="/mood-tracker" className="transition-colors hover:text-wellness-primary">{t('nav.moodTracker')}</Link></li>
           </ul>
         </div>
         
         <div className="space-y-3">
-          <h3 className="text-sm font-medium">Legal</h3>
+          <h3 className="text-sm font-medium">{t('footer.legal')}</h3>
           <ul className="grid gap-2 text-sm">
-            <li><Link to="/privacy" className="transition-colors hover:text-wellness-primary">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="transition-colors hover:text-wellness-primary">Terms of Service</Link></li>
-            <li><Link to="/contact" className="transition-colors hover:text-wellness-primary">Contact Us</Link></li>
+            <li><Link to="/privacy" className="transition-colors hover:text-wellness-primary">{t('footer.privacy')}</Link></li>
+            <li><Link to="/terms" className="transition-colors hover:text-wellness-primary">{t('footer.terms')}</Link></li>
+            <li><Link to="/contact" className="transition-colors hover:text-wellness-primary">{t('footer.contact')}</Link></li>
           </ul>
         </div>
       </div>
       
       <div className="container mt-8 border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p className="text-xs text-muted-foreground">© 2025 SereneMinds. All rights reserved.</p>
+        <p className="text-xs text-muted-foreground">{t('footer.copyright')}</p>
         <div className="flex gap-4">
           <a href="#" aria-label="Facebook" className="text-muted-foreground hover:text-wellness-primary">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
