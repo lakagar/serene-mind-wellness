@@ -119,7 +119,7 @@ const MoodTracker = () => {
   const [useLocalSummary, setUseLocalSummary] = useState<boolean>(false);
   const [publishedReports, setPublishedReports] = useState<TherapistReportType[]>([]);
 
-  // Load history from localStorage when component mounts
+  // Load history and reports from localStorage when component mounts
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_KEY);
     if (stored) {
@@ -130,7 +130,13 @@ const MoodTracker = () => {
   useEffect(() => {
     const stored = localStorage.getItem(REPORTS_STORAGE_KEY);
     if (stored) {
-      setPublishedReports(JSON.parse(stored));
+      try {
+        const parsedReports = JSON.parse(stored);
+        setPublishedReports(parsedReports);
+        console.log("MoodTracker - Loaded reports:", parsedReports); // Debug log
+      } catch (e) {
+        console.error("Error parsing reports:", e);
+      }
     }
   }, []);
 
@@ -226,9 +232,15 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
   }
 
   const handlePublishReport = (report: TherapistReportType) => {
-    const updatedReports = [...publishedReports, report];
-    setPublishedReports(updatedReports);
+    const existingReportsJSON = localStorage.getItem(REPORTS_STORAGE_KEY);
+    const existingReports = existingReportsJSON ? JSON.parse(existingReportsJSON) : [];
+    const updatedReports = [...existingReports, report];
+    
     localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
+    setPublishedReports(updatedReports);
+    
+    console.log("Published report:", report);
+    console.log("Updated reports:", updatedReports);
   };
 
   // Toggle between local and API summary

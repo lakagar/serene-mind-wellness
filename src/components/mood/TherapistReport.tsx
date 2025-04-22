@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -68,7 +69,18 @@ const TherapistReport = ({ history, apiKey, onError, onPublish }: TherapistRepor
       moodData: { ...history }
     };
 
-    onPublish?.(newReport);
+    // Store directly in localStorage to ensure it's saved
+    const REPORTS_STORAGE_KEY = 'counseling-reports';
+    const existingReportsJSON = localStorage.getItem(REPORTS_STORAGE_KEY);
+    const existingReports = existingReportsJSON ? JSON.parse(existingReportsJSON) : [];
+    const updatedReports = [...existingReports, newReport];
+    localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
+
+    // Call the onPublish callback if provided
+    if (onPublish) {
+      onPublish(newReport);
+    }
+    
     toast({
       title: t('mood.reportPublished'),
       description: t('mood.reportPublishedDesc'),

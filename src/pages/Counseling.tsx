@@ -149,11 +149,32 @@ const Counseling = () => {
   const navigate = useNavigate();
   const [publishedReports, setPublishedReports] = useState<TherapistReportType[]>([]);
   
+  // Load reports from localStorage on component mount and when reports are updated
   useEffect(() => {
-    const stored = localStorage.getItem(REPORTS_STORAGE_KEY);
-    if (stored) {
-      setPublishedReports(JSON.parse(stored));
-    }
+    const loadReports = () => {
+      const stored = localStorage.getItem(REPORTS_STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsedReports = JSON.parse(stored);
+          setPublishedReports(parsedReports);
+          console.log("Loaded reports:", parsedReports); // Debug log
+        } catch (e) {
+          console.error("Error parsing reports:", e);
+        }
+      }
+    };
+
+    loadReports();
+    
+    // Set up a storage event listener to update reports if changed in another tab
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === REPORTS_STORAGE_KEY) {
+        loadReports();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const handlePublishReport = (report: TherapistReportType) => {
@@ -404,19 +425,20 @@ const Counseling = () => {
               </h2>
               
               <div className="grid gap-4">
-                {publishedReports.map((report) => (
-                  <Card key={report.id}>
-                    <CardHeader>
-                      <CardTitle className="text-lg">
-                        {format(parseISO(report.date), "MMMM d, yyyy")}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="whitespace-pre-line">{report.content}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-                {publishedReports.length === 0 && (
+                {publishedReports && publishedReports.length > 0 ? (
+                  publishedReports.map((report) => (
+                    <Card key={report.id} className="overflow-hidden">
+                      <CardHeader className="bg-wellness-light/30">
+                        <CardTitle className="text-lg">
+                          {format(parseISO(report.date), "MMMM d, yyyy")}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="mt-2">
+                        <p className="whitespace-pre-line">{report.content}</p>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
                   <div className="text-center text-gray-500 py-8">
                     {t('counseling.noReports')}
                   </div>
