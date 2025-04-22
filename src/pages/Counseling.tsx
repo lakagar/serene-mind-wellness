@@ -3,7 +3,7 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Video, MessageSquare, Users, Clock, Calendar } from "lucide-react";
+import { Video, MessageSquare, Users, Clock, Calendar, IndianRupee } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import TherapistReport, { TherapistReportType } from "@/components/mood/TherapistReport";
@@ -321,15 +321,24 @@ const Counseling = () => {
                         <ul className="space-y-2">
                           <li className="flex justify-between">
                             <span>Video Session (45-50 min)</span>
-                            <span className="font-medium">$85</span>
+                            <span className="font-medium flex items-center">
+                              <IndianRupee className="h-4 w-4 mr-1" />
+                              6000
+                            </span>
                           </li>
                           <li className="flex justify-between">
                             <span>Chat Session (45-50 min)</span>
-                            <span className="font-medium">$70</span>
+                            <span className="font-medium flex items-center">
+                              <IndianRupee className="h-4 w-4 mr-1" />
+                              5000
+                            </span>
                           </li>
                           <li className="flex justify-between">
                             <span>Monthly Subscription (4 sessions)</span>
-                            <span className="font-medium">$299 <span className="text-sm text-green-600">Save 12%</span></span>
+                            <span className="font-medium flex items-center">
+                              <IndianRupee className="h-4 w-4 mr-1" />
+                              21000 <span className="text-sm text-green-600 ml-2">Save 12%</span>
+                            </span>
                           </li>
                         </ul>
                       </div>
@@ -401,11 +410,17 @@ const Counseling = () => {
                         <ul className="space-y-2">
                           <li className="flex justify-between">
                             <span>Single Group Session</span>
-                            <span className="font-medium">$35</span>
+                            <span className="font-medium flex items-center">
+                              <IndianRupee className="h-4 w-4 mr-1" />
+                              2500
+                            </span>
                           </li>
                           <li className="flex justify-between">
                             <span>Monthly Group Pass (4 sessions)</span>
-                            <span className="font-medium">$120 <span className="text-sm text-green-600">Save 14%</span></span>
+                            <span className="font-medium flex items-center">
+                              <IndianRupee className="h-4 w-4 mr-1" />
+                              9000 <span className="text-sm text-green-600 ml-2">Save 14%</span>
+                            </span>
                           </li>
                         </ul>
                       </div>
