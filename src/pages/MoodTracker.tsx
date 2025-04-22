@@ -8,6 +8,7 @@ import { format, isToday, subDays, parseISO, compareAsc } from "date-fns";
 import { toast } from "sonner";
 import TherapistReport from "@/components/mood/TherapistReport";
 import { useTranslation } from "react-i18next";
+import { TherapistReportType } from "@/components/mood/TherapistReport";
 
 const moods = [
   { label: "happy", value: "happy", icon: "😊" },
@@ -95,6 +96,7 @@ function getTodayISO() {
 }
 
 const LOCAL_KEY = "mood-tracker-history";
+const REPORTS_STORAGE_KEY = 'counseling-reports';
 
 const getLast7Days = () =>
   Array.from({ length: 7 }).map((_, i) =>
@@ -115,12 +117,20 @@ const MoodTracker = () => {
   const [summaryErr, setSummaryErr] = useState<string | null>(null);
   const [showAllHistory, setShowAllHistory] = useState<boolean>(false);
   const [useLocalSummary, setUseLocalSummary] = useState<boolean>(false);
+  const [publishedReports, setPublishedReports] = useState<TherapistReportType[]>([]);
 
   // Load history from localStorage when component mounts
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_KEY);
     if (stored) {
       setHistory(JSON.parse(stored));
+    }
+  }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(REPORTS_STORAGE_KEY);
+    if (stored) {
+      setPublishedReports(JSON.parse(stored));
     }
   }, []);
 
@@ -214,6 +224,12 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
       setLoadingSummary(false);
     }
   }
+
+  const handlePublishReport = (report: TherapistReportType) => {
+    const updatedReports = [...publishedReports, report];
+    setPublishedReports(updatedReports);
+    localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
+  };
 
   // Toggle between local and API summary
   const toggleSummaryMode = () => {
@@ -329,7 +345,8 @@ Please write a short, friendly summary of their weekly mood pattern, highlightin
           onError={(message) => {
             setSummaryErr(message);
             setUseLocalSummary(true);
-          }} 
+          }}
+          onPublish={handlePublishReport}
         />
 
         {/* Mood History */}

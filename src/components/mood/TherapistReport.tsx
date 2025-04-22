@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -12,10 +11,18 @@ type MoodHistory = {
   [date: string]: string;
 };
 
+export type TherapistReportType = {
+  id: string;
+  date: string;
+  content: string;
+  moodData: MoodHistory;
+};
+
 interface TherapistReportProps {
   history: MoodHistory;
   apiKey: string;
   onError: (message: string) => void;
+  onPublish?: (report: TherapistReportType) => void;
 }
 
 const moods = [
@@ -26,7 +33,7 @@ const moods = [
   { label: "Angry", value: "angry", color: "#f43f5e" },
 ];
 
-const TherapistReport = ({ history, apiKey, onError }: TherapistReportProps) => {
+const TherapistReport = ({ history, apiKey, onError, onPublish }: TherapistReportProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<string | null>(null);
@@ -49,6 +56,23 @@ const TherapistReport = ({ history, apiKey, onError }: TherapistReportProps) => 
       count: moodCounts[mood.value] || 0,
       fill: mood.color,
     }));
+  };
+
+  const handlePublish = () => {
+    if (!report) return;
+    
+    const newReport: TherapistReportType = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      content: report,
+      moodData: { ...history }
+    };
+
+    onPublish?.(newReport);
+    toast({
+      title: t('mood.reportPublished'),
+      description: t('mood.reportPublishedDesc'),
+    });
   };
 
   const generateReport = async () => {
@@ -165,8 +189,19 @@ Provide a professional yet empathetic analysis in 3-4 paragraphs.`;
         </Button>
 
         {report && (
-          <div className="mt-4 p-4 bg-muted rounded-lg whitespace-pre-line">
-            {report}
+          <div className="space-y-4">
+            <div className="mt-4 p-4 bg-muted rounded-lg whitespace-pre-line">
+              {report}
+            </div>
+            {onPublish && (
+              <Button 
+                onClick={handlePublish}
+                className="w-full"
+                variant="secondary"
+              >
+                {t('mood.publishReport')}
+              </Button>
+            )}
           </div>
         )}
       </CardContent>

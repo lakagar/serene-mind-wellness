@@ -1,11 +1,14 @@
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Video, MessageSquare, Users, Clock, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import TherapistReport, { TherapistReportType } from "@/components/mood/TherapistReport";
+import { useTranslation } from "react-i18next";
+import { format, parseISO } from "date-fns";
 
 const therapists = [
   {
@@ -139,8 +142,25 @@ const TherapistCard = ({ therapist }: { therapist: typeof therapists[0] }) => {
   );
 };
 
+const REPORTS_STORAGE_KEY = 'counseling-reports';
+
 const Counseling = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const [publishedReports, setPublishedReports] = useState<TherapistReportType[]>([]);
+  
+  useEffect(() => {
+    const stored = localStorage.getItem(REPORTS_STORAGE_KEY);
+    if (stored) {
+      setPublishedReports(JSON.parse(stored));
+    }
+  }, []);
+
+  const handlePublishReport = (report: TherapistReportType) => {
+    const updatedReports = [...publishedReports, report];
+    setPublishedReports(updatedReports);
+    localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
+  };
   
   const goToVideoSession = () => {
     navigate('/video-call');
@@ -371,6 +391,37 @@ const Counseling = () => {
                   </Card>
                 </TabsContent>
               </Tabs>
+            </div>
+          </div>
+        </section>
+
+        {/* Published Reports Section */}
+        <section className="py-12 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl font-bold mb-6 text-center text-wellness-dark">
+                {t('counseling.publishedReports')}
+              </h2>
+              
+              <div className="grid gap-4">
+                {publishedReports.map((report) => (
+                  <Card key={report.id}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">
+                        {format(parseISO(report.date), "MMMM d, yyyy")}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="whitespace-pre-line">{report.content}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+                {publishedReports.length === 0 && (
+                  <div className="text-center text-gray-500 py-8">
+                    {t('counseling.noReports')}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
