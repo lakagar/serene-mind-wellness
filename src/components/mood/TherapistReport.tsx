@@ -6,6 +6,7 @@ import { format, parseISO, subDays } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type MoodHistory = {
   [date: string]: string;
@@ -26,6 +27,7 @@ const moods = [
 ];
 
 const TherapistReport = ({ history, apiKey, onError }: TherapistReportProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<string | null>(null);
   const { toast } = useToast();
@@ -126,9 +128,9 @@ Provide a professional yet empathetic analysis in 3-4 paragraphs.`;
   };
 
   return (
-    <Card className="mt-8">
+    <Card className="mt-8 max-w-xl mx-auto">
       <CardHeader>
-        <CardTitle>Therapist Report</CardTitle>
+        <CardTitle>{t('mood.therapistReport')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="h-64">
@@ -159,7 +161,7 @@ Provide a professional yet empathetic analysis in 3-4 paragraphs.`;
           disabled={loading || Object.keys(history).length === 0}
           className="w-full"
         >
-          {loading ? "Generating Report..." : "Generate Therapist Report"}
+          {loading ? t('mood.generating') : t('mood.generateReport')}
         </Button>
 
         {report && (

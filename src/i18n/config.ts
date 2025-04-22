@@ -51,7 +51,8 @@ i18n
             allTime: 'Your Mood (All Time)',
             show7Days: 'Show 7 Days',
             showAll: 'Show All',
-          },
+            therapistReport: 'Therapist Report',
+          }
         }
       },
       hi: {
@@ -97,7 +98,8 @@ i18n
             allTime: 'सभी समय का मूड',
             show7Days: '7 दिन दिखाएं',
             showAll: 'सभी दिखाएं',
-          },
+            therapistReport: 'चिकित्सक की रिपोर्ट',
+          }
         }
       },
       es: {
@@ -143,7 +145,8 @@ i18n
             allTime: 'Tu Estado de Ánimo (Todo el tiempo)',
             show7Days: 'Mostrar 7 días',
             showAll: 'Mostrar Todo',
-          },
+            therapistReport: 'Informe del Terapeuta',
+          }
         }
       }
     },
