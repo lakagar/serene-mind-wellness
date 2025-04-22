@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Share } from "lucide-react";
 
 type MoodHistory = {
   [date: string]: string;
@@ -59,6 +59,30 @@ const TherapistReport = ({ history, apiKey, onError, onPublish }: TherapistRepor
     }));
   };
 
+  const handleShare = async () => {
+    if (!report) return;
+    
+    try {
+      await navigator.share({
+        title: 'Therapy Report',
+        text: report,
+      });
+      
+      toast({
+        title: t('mood.reportShared'),
+        description: t('mood.reportSharedDesc'),
+      });
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        toast({
+          title: t('mood.shareError'),
+          description: t('mood.shareErrorDesc'),
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   const handlePublish = () => {
     if (!report) return;
     
@@ -69,22 +93,33 @@ const TherapistReport = ({ history, apiKey, onError, onPublish }: TherapistRepor
       moodData: { ...history }
     };
 
-    // Store directly in localStorage to ensure it's saved
-    const REPORTS_STORAGE_KEY = 'counseling-reports';
-    const existingReportsJSON = localStorage.getItem(REPORTS_STORAGE_KEY);
-    const existingReports = existingReportsJSON ? JSON.parse(existingReportsJSON) : [];
-    const updatedReports = [...existingReports, newReport];
-    localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
+    try {
+      // Store in localStorage
+      const REPORTS_STORAGE_KEY = 'counseling-reports';
+      const existingReportsJSON = localStorage.getItem(REPORTS_STORAGE_KEY);
+      const existingReports = existingReportsJSON ? JSON.parse(existingReportsJSON) : [];
+      const updatedReports = [...existingReports, newReport];
+      localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
 
-    // Call the onPublish callback if provided
-    if (onPublish) {
-      onPublish(newReport);
+      // Call the onPublish callback if provided
+      if (onPublish) {
+        onPublish(newReport);
+      }
+      
+      toast({
+        title: t('mood.reportPublished'),
+        description: t('mood.reportPublishedDesc'),
+      });
+
+      console.log("Report published successfully:", newReport); // Debug log
+    } catch (error) {
+      console.error("Error publishing report:", error);
+      toast({
+        title: t('mood.publishError'),
+        description: t('mood.publishErrorDesc'),
+        variant: "destructive",
+      });
     }
-    
-    toast({
-      title: t('mood.reportPublished'),
-      description: t('mood.reportPublishedDesc'),
-    });
   };
 
   const generateReport = async () => {
@@ -205,15 +240,25 @@ Provide a professional yet empathetic analysis in 3-4 paragraphs.`;
             <div className="mt-4 p-4 bg-muted rounded-lg whitespace-pre-line">
               {report}
             </div>
-            {onPublish && (
+            <div className="flex gap-2">
+              {onPublish && (
+                <Button 
+                  onClick={handlePublish}
+                  className="flex-1"
+                  variant="secondary"
+                >
+                  {t('mood.publishReport')}
+                </Button>
+              )}
               <Button 
-                onClick={handlePublish}
-                className="w-full"
-                variant="secondary"
+                onClick={handleShare}
+                className="flex-1"
+                variant="outline"
               >
-                {t('mood.publishReport')}
+                <Share className="mr-2" />
+                {t('mood.shareReport')}
               </Button>
-            )}
+            </div>
           </div>
         )}
       </CardContent>

@@ -181,6 +181,7 @@ const Counseling = () => {
     const updatedReports = [...publishedReports, report];
     setPublishedReports(updatedReports);
     localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updatedReports));
+    console.log("Published report:", report); // Debug log
   };
   
   const goToVideoSession = () => {
